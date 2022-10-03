@@ -1,0 +1,32 @@
+services:
+  seeder:
+    build:
+      context: ./seeder
+    networks:
+      - database_crawler_test
+
+  crawler:
+    build:
+      context: ./crawler
+    volumes:
+      - /home/yash/data:/data
+    depends_on:
+      - seeder
+    networks:
+      - database_crawler_test
+    deploy:
+      replicas: 5
+
+  extractor:
+    build:
+      context: ./extractor
+    volumes:
+      - /home/yash/data:/data
+    depends_on:
+      - crawler
+    networks:
+      - database_crawler_test
+
+networks:
+  database_crawler_test:
+    external: true
